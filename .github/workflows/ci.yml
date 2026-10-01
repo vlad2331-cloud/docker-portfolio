@@ -1,19 +1,19 @@
 name: CI Docker Build Check
 
-# Указываем, когда запускать робота
 on:
   push:
-    branches: [ main ] # Запускать при отправке кода в ветку main
+    branches: [ "main" ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest # Использовать виртуальный компьютер с Linux от GitHub
+    # Явно указываем стабильную версию Ubuntu, чтобы убрать предупреждение
+    runs-on: ubuntu-24.04 
 
     steps:
-      # Шаг 1: Скачать ваш код из репозитория
+      # Скачиваем код репозитория
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Шаг 2: Запустить сборку Docker-образа
+      # Проверяем сборку Docker-образа в одну простую команду
       - name: Build Docker image
         run: docker build -t portfolio-site .
