@@ -1,14 +1,21 @@
 version: '3.8'
 
 services:
-  # Название нашего сервиса (может быть любым)
+  # Наш бэкенд на Python (FastAPI)
+  backend:
+    build: ./backend
+    container_name: portfolio-backend
+    ports:
+      - "8000:8000"
+    restart: always
+
+  # Наш фронтенд (веб-сервер Nginx с сайтом)
   portfolio:
-    # Говорим Docker собрать образ из текущей папки (где лежит Dockerfile)
     build: .
-    # Задаем имя контейнера
     container_name: my-portfolio-compose
-    # Пробрасываем порты (компьютер : контейнер)
     ports:
       - "8080:80"
-    # Опция автоматического перезапуска, если контейнер упадет
     restart: always
+    # Говорим Docker, что сайт должен запускаться только ПОСЛЕ того, как запустится бэкенд
+    depends_on:
+      - backend

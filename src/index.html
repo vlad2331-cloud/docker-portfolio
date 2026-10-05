@@ -24,7 +24,31 @@
     <section id="about" class="section">
         <div class="container">
             <h1>Привет, я начинающий разработчик! 👋</h1>
-            <p>Я учусь создавать современные веб-приложения и упаковывать их в Docker. Это мой первый полноценный проект.</p>
+                        <p>Я учусь создавать современные веб-приложения и упаковывать их в Docker. Это мой первый полноценный проект.</p>
+            
+            <!-- Сюда скрипт вставит цитату с бэкенда -->
+            <div id="quote-box" style="margin-top: 25px; padding: 15px; background: #e0f7fa; border-left: 5px solid #00adb5; font-style: italic; border-radius: 4px;">
+                Загрузка вдохновляющей цитаты...
+            </div>
+
+            <!-- Скрипт, который стучится на Python-сервер -->
+            <script>
+                async function fetchQuote() {
+                    try {
+                        // Делаем запрос к нашему Python контейнеру на порт 8000
+                        const response = await fetch('http://localhost:8000/api/quote');
+                        const data = await response.json();
+                        // Меняем текст на странице на полученную цитату
+                        document.getElementById('quote-box').innerText = `💬 "${data.quote}"`;
+                    } catch (error) {
+                        console.error("Ошибка подключения к бэкенду:", error);
+                        document.getElementById('quote-box').innerText = "❌ Не удалось загрузить цитату с бэкенда.";
+                    }
+                }
+                // Запускаем функцию при загрузке страницы
+                fetchQuote();
+            </script>
+
         </div>
     </section>
 
