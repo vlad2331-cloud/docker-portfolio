@@ -31,21 +31,37 @@
                 Загрузка вдохновляющей цитаты...
             </div>
 
-            <!-- Скрипт, который стучится на Python-сервер -->
+                        <!-- Скрипт с умным переключением Локал/Продакшн -->
             <script>
+                // Запасной список цитат для GitHub Pages, если бэкенд недоступен в сети
+                const backupQuotes = [
+                    "Ошибки — это знаки того, что вы пытаетесь. Продолжайте учиться!",
+                    "Каждый великий разработчик начинал с обычного print('Hello World').",
+                    "Этот сайт запущен на GitHub Pages, а локально работает в Docker!",
+                    "Контейнеризация — это просто, если разбираться шаг за шагом!"
+                ];
+
                 async function fetchQuote() {
-                    try {
-                        // Делаем запрос к нашему Python контейнеру на порт 8000
-                        const response = await fetch('http://localhost:8000/api/quote');
-                        const data = await response.json();
-                        // Меняем текст на странице на полученную цитату
-                        document.getElementById('quote-box').innerText = `💬 "${data.quote}"`;
-                    } catch (error) {
-                        console.error("Ошибка подключения к бэкенду:", error);
-                        document.getElementById('quote-box').innerText = "❌ Не удалось загрузить цитату с бэкенда.";
+                    // Проверяем, открыт сайт локально или в интернете
+                    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                    
+                    if (isLocal) {
+                        try {
+                            // Если локально — строго стучимся в наш Docker-контейнер Python
+                            const response = await fetch('http://localhost:8000/api/quote');
+                            const data = await response.json();
+                            document.getElementById('quote-box').innerText = `🐳 (Docker Бэкенд) "${data.quote}"`;
+                            return;
+                        } catch (error) {
+                            console.log("Локальный бэкенд не запущен, включаем запасной режим.");
+                        }
                     }
+                    
+                    // Если сайт в интернете (GitHub Pages) или Docker выключен — берем цитату из фронтенда
+                    const randomQuote = backupQuotes[Math.floor(Math.random() * backupQuotes.length)];
+                    document.getElementById('quote-box').innerText = `🌐 (GitHub Pages) "${randomQuote}"`;
                 }
-                // Запускаем функцию при загрузке страницы
+                
                 fetchQuote();
             </script>
 
